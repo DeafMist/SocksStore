@@ -9,7 +9,6 @@ import lombok.NoArgsConstructor;
 import java.util.Objects;
 
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
 public class Socks {
     private Color color;
@@ -19,6 +18,13 @@ public class Socks {
     private int cottonPart;
 
     private int quantity;
+
+    public Socks(Color color, int size, int cottonPart, int quantity) {
+        this.color = color;
+        this.size = Size.convertIntToSize(size);
+        this.cottonPart = cottonPart;
+        this.quantity = quantity;
+    }
 
     public void setCottonPart(int cottonPart) {
         if (cottonPart < 0 || cottonPart > 100) {

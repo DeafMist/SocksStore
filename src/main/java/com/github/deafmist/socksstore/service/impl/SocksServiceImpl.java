@@ -1,5 +1,6 @@
 package com.github.deafmist.socksstore.service.impl;
 
+import com.github.deafmist.socksstore.dto.SocksRequest;
 import com.github.deafmist.socksstore.exception.NoSuchSocksCountException;
 import com.github.deafmist.socksstore.model.Color;
 import com.github.deafmist.socksstore.model.Size;
@@ -15,7 +16,8 @@ public class SocksServiceImpl implements SocksService {
     private List<Socks> socksList = new LinkedList<>();
 
     @Override
-    public Socks add(Socks socks) {
+    public Socks add(SocksRequest socksRequest) {
+        Socks socks = mapToSocks(socksRequest);
         int index = socksList.indexOf(socks);
         if (index != -1) {
             int quantity = socksList.get(index).getQuantity() + socks.getQuantity();
@@ -31,7 +33,8 @@ public class SocksServiceImpl implements SocksService {
     }
 
     @Override
-    public Socks update(Socks socks) {
+    public Socks update(SocksRequest socksRequest) {
+        Socks socks = mapToSocks(socksRequest);
         int index = socksList.indexOf(socks);
         if (index != -1) {
             int quantity = socksList.get(index).getQuantity() - socks.getQuantity();
@@ -56,14 +59,18 @@ public class SocksServiceImpl implements SocksService {
     }
 
     @Override
-    public int get(Color color, Size size, int cottonMin, int cottonMax) {
+    public int get(Color color, int size, int cottonMin, int cottonMax) {
         int total = 0;
         for (Socks socks : socksList) {
-            if (socks.getColor().equals(color) && socks.getSize().equals(size) &&
+            if (socks.getColor().equals(color) && socks.getSize().equals(Size.convertIntToSize(size)) &&
                     socks.getCottonPart() >= cottonMin && socks.getCottonPart() <= cottonMax) {
                 total += socks.getQuantity();
             }
         }
         return total;
+    }
+
+    private Socks mapToSocks(SocksRequest socksRequest) {
+        return new Socks(socksRequest.getColor(), socksRequest.getSize(), socksRequest.getCottonPart(), socksRequest.getQuantity());
     }
 }
